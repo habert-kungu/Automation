@@ -1,0 +1,56 @@
+{
+  "name": "Facebook Lead Ads to Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "page": "YOUR_PAGE_ID"
+      },
+      "name": "Facebook Lead Ads Trigger",
+      "type": "n8n-nodes-base.facebookLeadAdsTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "credentials": {
+        "facebookLeadAdsApi": {
+          "id": "YOUR_FACEBOOK_CREDENTIALS_ID",
+          "name": "Facebook Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_GOOGLE_SHEET_ID",
+        "range": "A:C",
+        "values": "={{JSON.stringify([$json.lead.field_data.find(f => f.name === 'full_name').values[0], $json.lead.field_data.find(f => f.name === 'email').values[0], $json.lead.field_data.find(f => f.name === 'phone_number').values[0]])}}"
+      },
+      "name": "Append to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "googleSheetsApi": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIALS_ID",
+          "name": "Google Sheets Credentials"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Facebook Lead Ads Trigger": {
+      "main": [
+        [
+          {
+            "node": "Append to Google Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

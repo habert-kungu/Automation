@@ -1,0 +1,127 @@
+{
+  "name": "AI Server Health Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "value": 5
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.example.com/health",
+        "options": {}
+      },
+      "name": "Health Check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "{{$json.status}}",
+              "value2": "ok",
+              "operation": "notEqual"
+            }
+          ]
+        }
+      },
+      "name": "Is Server Down?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "channel": "server-alerts",
+        "text": "🚨 High alert! The production server is down. Immediate action required. 🚨",
+        "attachments": [
+          {
+            "title": "Server Health Check Failed",
+            "color": "#ff0000",
+            "fields": [
+              {
+                "title": "Status",
+                "value": "{{$json.status}}"
+              },
+              {
+                "title": "Time",
+                "value": "{{$now.toFormat('DD-MM-YYYY HH:mm:ss')}}"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        900,
+        200
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_SLACK_CREDENTIALS_ID",
+          "name": "Slack Credentials"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Health Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Health Check": {
+      "main": [
+        [
+          {
+            "node": "Is Server Down?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Server Down?": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

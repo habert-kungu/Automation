@@ -1,1 +1,95 @@
-
+{
+  "name": "Social Media Cross-Posting",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "message": "This is a test post from my awesome new workflow!",
+        "options": {}
+      },
+      "name": "Facebook Post",
+      "type": "n8n-nodes-base.facebook",
+      "typeVersion": 1,
+      "position": [
+        460,
+        200
+      ],
+      "credentials": {
+        "facebookApi": {
+          "id": "YOUR_FACEBOOK_CREDENTIALS_ID",
+          "name": "Facebook Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "status": "This is a test post from my awesome new workflow!",
+        "options": {}
+      },
+      "name": "Twitter Post",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "twitterApi": {
+          "id": "YOUR_TWITTER_CREDENTIALS_ID",
+          "name": "Twitter Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "This is a test post from my awesome new workflow!",
+        "options": {}
+      },
+      "name": "LinkedIn Post",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        460,
+        400
+      ],
+      "credentials": {
+        "linkedInApi": {
+          "id": "YOUR_LINKEDIN_CREDENTIALS_ID",
+          "name": "LinkedIn Credentials"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Facebook Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twitter Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "LinkedIn Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
